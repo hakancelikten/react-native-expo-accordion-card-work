@@ -104,7 +104,6 @@ const TransactionAccordion = () => {
     </ScrollView>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -152,6 +151,7 @@ const styles = StyleSheet.create({
   cardDate: {
     fontSize: 14,
     color: "#666",
+    fontWeight: "bold",  // Burada kalınlık ekleniyor
   },
   cardRow: {
     flexDirection: "row",
@@ -261,5 +261,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
 });
+
 
 export default TransactionAccordion;
