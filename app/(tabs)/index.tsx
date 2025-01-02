@@ -3,11 +3,40 @@ import {
   View,
   Text,
   StyleSheet,
-  TouchableOpacity,
   ScrollView,
+  TouchableOpacity,
 } from "react-native";
-import { Card } from "react-native-paper";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import { Card } from "react-native-paper"; // Paper Card bileşenini import ediyoruz.
+
+// Mock Data
+const mockData = [
+  {
+    id: 1,
+    date: "12 Jan 2025",
+    spendings: 100,
+    income: 10,
+    categoryName: "Commute",
+    categoryIcon: "commute",
+    transactions: [
+      { id: 1, name: "Uber", price: 80 },
+      { id: 2, name: "Metro", price: 10 },
+    ],
+  },
+  {
+    id: 2,
+    date: "15 Jan 2025",
+    spendings: 20,
+    income: 0,
+    categoryName: "Food And Drinks",
+    categoryIcon: "restaurant",
+    transactions: [
+      { id: 1, name: "Hamburger", price: 6 },
+      { id: 2, name: "Coffee", price: 4 },
+      { id: 3, name: "Beer", price: 10 },
+    ],
+  },
+];
 
 const TransactionAccordion = () => {
   const [isTransactionOpen, setTransactionOpen] = useState(false);
@@ -32,7 +61,7 @@ const TransactionAccordion = () => {
         <MaterialIcons
           name={isTransactionOpen ? "keyboard-arrow-up" : "keyboard-arrow-down"}
           size={24}
-          color="#6A5ACD"
+          color="#666"
         />
       </TouchableOpacity>
 
@@ -44,75 +73,95 @@ const TransactionAccordion = () => {
             { backgroundColor: "#f8f8f8", borderRadius: 12 },
           ]}
         >
-          {[1, 2, 3, 4, 5].map((cardIndex) => (
-            <Card key={cardIndex} style={styles.card}>
-              <View style={styles.cardHeader}>
-                <Text style={styles.cardDate}>12 Jan 2025</Text>
-              </View>
-              <View style={styles.cardRow}>
-                <Text style={styles.cardLabel}>Spendings</Text>
-                <Text style={styles.cardValueSpending}>
-                  -${120 * cardIndex}
-                </Text>
-              </View>
-              <View style={styles.cardRow}>
-                <Text style={styles.cardLabel}>Income</Text>
-                <Text style={styles.cardValueIncome}>+${300 * cardIndex}</Text>
-              </View>
-              <View style={styles.divider} />
-
-              {/* Nested Accordion */}
-              <TouchableOpacity
-                style={styles.innerAccordionHeader}
-                onPress={() => toggleCardAccordion(cardIndex)}
-              >
-                <View style={styles.innerAccordionLeft}>
-                  <MaterialIcons
-                    name="restaurant"
-                    size={20}
-                    color="#6A5ACD"
-                    style={styles.innerAccordionIcon}
-                  />
-                  <View>
-                    <Text style={styles.innerAccordionTitle}>
-                      Food and Drinks
-                    </Text>
-                    <View style={styles.totalRow}>
-                      <Text style={styles.totalAmount}>${50 * cardIndex}</Text>
-                    </View>
-                  </View>
+          {mockData.map((cardData, cardIndex) => (
+            <Card key={cardData.id} style={styles.card}>
+              {/* Paper Card bileşeni kullanılıyor */}
+              <Card.Content>
+                <View style={styles.cardHeader}>
+                  <Text style={styles.cardDate}>{cardData.date}</Text>
                 </View>
-                <View style={styles.innerAccordionRight}>
-                  <View style={styles.itemCountBox}>
-                    <Text style={styles.itemCountText}>2</Text>
-                  </View>
-                  <MaterialIcons
-                    name={
-                      openCards.includes(cardIndex)
-                        ? "keyboard-arrow-up"
-                        : "keyboard-arrow-down"
-                    }
-                    size={24}
-                    color="#666"
-                  />
+                <View style={styles.cardRow}>
+                  <Text style={styles.cardLabel}>Spendings</Text>
+                  <Text style={styles.cardValueSpending}>
+                    -${cardData.spendings}
+                  </Text>
                 </View>
-              </TouchableOpacity>
+                <View style={styles.cardRow}>
+                  <Text style={styles.cardLabel}>Income</Text>
+                  <Text style={styles.cardValueIncome}>
+                    +${cardData.income}
+                  </Text>
+                </View>
+                <View style={styles.divider} />
 
-              {openCards.includes(cardIndex) && (
-                <View style={styles.innerAccordionContent}>
-                  {/* Cards for each item */}
-                  {[1, 2].map((itemIndex) => (
-                    <Card key={itemIndex} style={styles.itemCard}>
-                      <View style={styles.innerAccordionItemContainer}>
-                        <Text style={styles.innerAccordionItem}>
-                          {itemIndex === 1 ? "🍔 Item 1A" : "☕ Item 1B"}: $
-                          {20 * itemIndex}
+                {/* Nested Accordion for Food and Drinks */}
+                <TouchableOpacity
+                  style={styles.innerAccordionHeader}
+                  onPress={() => toggleCardAccordion(cardData.id)}
+                >
+                  <View style={styles.innerAccordionLeft}>
+                    <MaterialIcons
+                      name={cardData.categoryIcon}
+                      size={20}
+                      color="#000000"
+                      style={styles.innerAccordionIcon}
+                    />
+                    <View>
+                      <Text style={styles.innerAccordionTitle}>
+                        {cardData.categoryName}
+                      </Text>
+                      <View style={styles.totalRow}>
+                        <Text style={styles.totalAmount}>
+                          $
+                          {cardData.transactions.reduce(
+                            (acc, item) => acc + item.price,
+                            0
+                          )}
                         </Text>
                       </View>
+                    </View>
+                  </View>
+                  <View style={styles.innerAccordionRight}>
+                    <View style={styles.itemCountBox}>
+                      <Text style={styles.itemCountText}>
+                        {cardData.transactions.length}
+                      </Text>
+                    </View>
+                    <MaterialIcons
+                      name={
+                        openCards.includes(cardData.id)
+                          ? "keyboard-arrow-up"
+                          : "keyboard-arrow-down"
+                      }
+                      size={24}
+                      color="#666"
+                    />
+                  </View>
+                </TouchableOpacity>
+
+                {openCards.includes(cardData.id) && (
+                  <View style={styles.innerAccordionContent}>
+                    {/* Nested Card under Food and Drinks */}
+                    <Card style={styles.subCard}>
+                      <Card.Content>
+                        {cardData.transactions.map((item) => (
+                          <View key={item.id} style={styles.cardItemContainer}>
+                            <Text style={styles.innerAccordionItem}>
+                              {item.name}: ${item.price}
+                            </Text>
+                          </View>
+                        ))}
+
+                        <Text style={styles.subCardTitle}>More Details</Text>
+                        <Text style={styles.subCardText}>
+                          This is a detailed description of the food items, such
+                          as ingredients, pricing, and other information.
+                        </Text>
+                      </Card.Content>
                     </Card>
-                  ))}
-                </View>
-              )}
+                  </View>
+                )}
+              </Card.Content>
             </Card>
           ))}
 
@@ -132,73 +181,64 @@ const TransactionAccordion = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
-    paddingTop: 10,
+    backgroundColor: "#f9f9f9",
+    paddingHorizontal: 16,
+    paddingVertical: 8,
   },
   accordionHeader: {
-    padding: 16,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    backgroundColor: "#fff",
-    borderTopLeftRadius: 10,
-    borderTopRightRadius: 10,
-    elevation: 3,
+    padding: 12,
+    borderRadius: 12,
+    backgroundColor: "#ffffff",
+    marginTop: 20,
+    marginBottom: 20,
   },
   accordionTitle: {
-    fontSize: 22, // Daha büyük font
-    fontWeight: "600",
-    color: "#333", // Siyahın güzel bir tonu
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#333",
   },
   transactionContent: {
-    margin: 12,
-    padding: 16,
-    backgroundColor: "#fff",
-    borderRadius: 12,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 6,
+    padding: 8,
+    marginBottom: 12,
   },
   card: {
-    marginBottom: 16,
-    backgroundColor: "#ffffff",
-    padding: 16,
+    marginLeft: 8,
+    marginRight: 8,
+    marginBottom: 12,
     borderRadius: 8,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
     elevation: 4,
+    backgroundColor: "#f0f0f0",
+    padding: 16,
   },
   cardHeader: {
     marginBottom: 8,
   },
   cardDate: {
-    fontSize: 16,
-    color: "#888",
-    fontWeight: "500",
+    fontSize: 14,
+    color: "#666",
+    fontWeight: "bold",
   },
   cardRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginBottom: 8,
+    marginBottom: 4,
   },
   cardLabel: {
-    fontSize: 18,
-    fontWeight: "600",
-    color: "#444",
+    fontSize: 14,
+    color: "#333",
   },
   cardValueSpending: {
-    fontSize: 18,
-    fontWeight: "600",
-    color: "#FF6347", // Red for spending
+    fontSize: 14,
+    fontWeight: "bold",
+    color: "#FF6347",
   },
   cardValueIncome: {
-    fontSize: 18,
-    fontWeight: "600",
-    color: "#32CD32", // Green for income
+    fontSize: 14,
+    fontWeight: "bold",
+    color: "#32CD32",
   },
   divider: {
     height: 1,
@@ -209,88 +249,107 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 12,
+    paddingVertical: 10,
+    borderBottomWidth: 2,
+    borderColor: "#f0f0f0",
+    backgroundColor: "#f7f7f7",
+    borderRadius: 8,
+    paddingHorizontal: 12,
   },
   innerAccordionLeft: {
     flexDirection: "row",
     alignItems: "center",
   },
   innerAccordionIcon: {
-    marginRight: 12,
+    marginRight: 8,
   },
   innerAccordionTitle: {
-    fontSize: 18,
-    fontWeight: "600",
+    fontSize: 16,
     color: "#333",
+    fontWeight: "bold",
   },
   totalRow: {
     flexDirection: "row",
-    justifyContent: "space-between",
-    marginTop: 6,
+    alignItems: "center",
   },
   totalAmount: {
-    fontSize: 16,
-    fontWeight: "500",
-    color: "#6A5ACD",
+    fontSize: 14,
+    fontWeight: "bold",
+    color: "#333",
   },
   innerAccordionRight: {
     flexDirection: "row",
     alignItems: "center",
   },
   itemCountBox: {
-    backgroundColor: "#0071e3",
-    padding: 6,
-    borderRadius: 12,
-    marginRight: 10,
+    backgroundColor: "#4A90E2",
+    textAlign: "center",
+    borderRadius: 8,
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    marginRight: 8,
   },
   itemCountText: {
-    width: 25,
     textAlign: "center",
+    padding: 3,
+    fontSize: 12,
+    fontWeight: "bold",
     color: "#fff",
-    fontWeight: "600",
   },
   innerAccordionContent: {
     paddingLeft: 16,
-    marginBottom: 8,
-  },
-  innerAccordionItemContainer: {
-    padding: 8,
+    paddingVertical: 12,
+    backgroundColor: "#ffffff",
+    borderRadius: 8,
+    marginTop: 6,
+    shadowColor: "#ddd",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
   innerAccordionItem: {
-    fontSize: 16,
+    fontSize: 14,
     color: "#555",
-    marginVertical: 4,
+    marginBottom: 8,
+    paddingVertical: 4,
+    backgroundColor: "#fff",
+    borderRadius: 6,
+    paddingHorizontal: 10,
+    textAlign: "left",
+  },
+  cardItemContainer: {
+    marginBottom: 8,
+  },
+  subCard: {
+    marginTop: 12,
+    backgroundColor: "#f7f7f7",
+    borderRadius: 8,
+    elevation: 3,
+    padding: 12,
+  },
+  subCardTitle: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#333",
+    marginBottom: 8,
+  },
+  subCardText: {
+    fontSize: 14,
+    color: "#555",
   },
   bottomDividerContainer: {
     marginTop: 16,
-    alignItems: "center",
   },
   seeAllButton: {
-    paddingVertical: 10,
-    backgroundColor: "#f4f4f4",
-    borderRadius: 12,
-    paddingHorizontal: 20,
+    marginTop: 10,
+    padding: 8,
+    alignItems: "center",
   },
   seeAllText: {
     fontSize: 16,
-    fontWeight: "600",
     color: "#333",
-  },
-  itemCard: {
-    backgroundColor: "#f4f4f4",
-    marginVertical: 8,
-    padding: 16,
-    borderRadius: 8,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 4,
-  },
-  itemValue: {
-    fontSize: 20, // Boyutu büyüttüm
-    fontWeight: "700", // Kalınlık artırıldı
-    color: "#1E90FF", // Mavi renk
+    fontWeight: "bold",
   },
 });
 
