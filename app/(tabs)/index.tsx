@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   ScrollView,
 } from "react-native";
+import { Card } from "react-native-paper";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
 const TransactionAccordion = () => {
@@ -31,21 +32,28 @@ const TransactionAccordion = () => {
         <MaterialIcons
           name={isTransactionOpen ? "keyboard-arrow-up" : "keyboard-arrow-down"}
           size={24}
-          color="#666"
+          color="#6A5ACD"
         />
       </TouchableOpacity>
 
       {/* Cards inside Transaction Accordion */}
       {isTransactionOpen && (
-        <View style={[styles.transactionContent, { backgroundColor: "#f8f8f8", borderRadius: 12 }]}>
+        <View
+          style={[
+            styles.transactionContent,
+            { backgroundColor: "#f8f8f8", borderRadius: 12 },
+          ]}
+        >
           {[1, 2, 3, 4, 5].map((cardIndex) => (
-            <View key={cardIndex} style={styles.card}>
+            <Card key={cardIndex} style={styles.card}>
               <View style={styles.cardHeader}>
                 <Text style={styles.cardDate}>12 Jan 2025</Text>
               </View>
               <View style={styles.cardRow}>
                 <Text style={styles.cardLabel}>Spendings</Text>
-                <Text style={styles.cardValueSpending}>-${120 * cardIndex}</Text>
+                <Text style={styles.cardValueSpending}>
+                  -${120 * cardIndex}
+                </Text>
               </View>
               <View style={styles.cardRow}>
                 <Text style={styles.cardLabel}>Income</Text>
@@ -66,7 +74,9 @@ const TransactionAccordion = () => {
                     style={styles.innerAccordionIcon}
                   />
                   <View>
-                    <Text style={styles.innerAccordionTitle}>Food and Drinks</Text>
+                    <Text style={styles.innerAccordionTitle}>
+                      Food and Drinks
+                    </Text>
                     <View style={styles.totalRow}>
                       <Text style={styles.totalAmount}>${50 * cardIndex}</Text>
                     </View>
@@ -77,19 +87,33 @@ const TransactionAccordion = () => {
                     <Text style={styles.itemCountText}>2</Text>
                   </View>
                   <MaterialIcons
-                    name={openCards.includes(cardIndex) ? "keyboard-arrow-up" : "keyboard-arrow-down"}
+                    name={
+                      openCards.includes(cardIndex)
+                        ? "keyboard-arrow-up"
+                        : "keyboard-arrow-down"
+                    }
                     size={24}
                     color="#666"
                   />
                 </View>
               </TouchableOpacity>
+
               {openCards.includes(cardIndex) && (
                 <View style={styles.innerAccordionContent}>
-                  <Text style={styles.innerAccordionItem}>🍔 Item {cardIndex}A: ${20 * cardIndex}</Text>
-                  <Text style={styles.innerAccordionItem}>☕ Item {cardIndex}B: ${30 * cardIndex}</Text>
+                  {/* Cards for each item */}
+                  {[1, 2].map((itemIndex) => (
+                    <Card key={itemIndex} style={styles.itemCard}>
+                      <View style={styles.innerAccordionItemContainer}>
+                        <Text style={styles.innerAccordionItem}>
+                          {itemIndex === 1 ? "🍔 Item 1A" : "☕ Item 1B"}: $
+                          {20 * itemIndex}
+                        </Text>
+                      </View>
+                    </Card>
+                  ))}
                 </View>
               )}
-            </View>
+            </Card>
           ))}
 
           {/* Divider and See All */}
@@ -104,40 +128,45 @@ const TransactionAccordion = () => {
     </ScrollView>
   );
 };
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f9f9f9",
-    paddingHorizontal: 16,
-    paddingVertical: 8,
+    backgroundColor: "#fff",
+    paddingTop: 10,
   },
   accordionHeader: {
+    padding: 16,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    padding: 12,
-    borderRadius: 12,
-    backgroundColor: "#ffffff",
-    marginTop: 20,
-    marginBottom: 20,
+    backgroundColor: "#fff",
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
+    elevation: 3,
   },
   accordionTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "#333",
+    fontSize: 22, // Daha büyük font
+    fontWeight: "600",
+    color: "#333", // Siyahın güzel bir tonu
   },
   transactionContent: {
-    padding: 8,
-    marginBottom: 12,
+    margin: 12,
+    padding: 16,
+    backgroundColor: "#fff",
+    borderRadius: 12,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 6,
   },
   card: {
-    backgroundColor: "#f0f0f0", 
-    borderRadius: 8,
+    marginBottom: 16,
+    backgroundColor: "#ffffff",
     padding: 16,
-    marginLeft: 8,
-    marginRight: 8,
-    marginBottom: 12,
-    shadowColor: "#ddd", 
+    borderRadius: 8,
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,
     shadowRadius: 8,
@@ -145,32 +174,31 @@ const styles = StyleSheet.create({
   },
   cardHeader: {
     marginBottom: 8,
-    borderColor: "#ddd",
-    paddingBottom: 8,
   },
   cardDate: {
-    fontSize: 14,
-    color: "#666",
-    fontWeight: "bold",  // Burada kalınlık ekleniyor
+    fontSize: 16,
+    color: "#888",
+    fontWeight: "500",
   },
   cardRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginBottom: 4,
+    marginBottom: 8,
   },
   cardLabel: {
-    fontSize: 14,
-    color: "#333",
+    fontSize: 18,
+    fontWeight: "600",
+    color: "#444",
   },
   cardValueSpending: {
-    fontSize: 14,
-    fontWeight: "bold",
-    color: "#FF6347",
+    fontSize: 18,
+    fontWeight: "600",
+    color: "#FF6347", // Red for spending
   },
   cardValueIncome: {
-    fontSize: 14,
-    fontWeight: "bold",
-    color: "#32CD32",
+    fontSize: 18,
+    fontWeight: "600",
+    color: "#32CD32", // Green for income
   },
   divider: {
     height: 1,
@@ -181,86 +209,89 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingVertical: 10,
-    borderBottomWidth: 2,
-    borderColor: "#f0f0f0", 
-    backgroundColor: "#f7f7f7", 
-    borderRadius: 8,
-    paddingHorizontal: 12,
+    marginBottom: 12,
   },
   innerAccordionLeft: {
     flexDirection: "row",
     alignItems: "center",
   },
   innerAccordionIcon: {
-    marginRight: 8,
+    marginRight: 12,
   },
   innerAccordionTitle: {
-    fontSize: 16,
+    fontSize: 18,
+    fontWeight: "600",
     color: "#333",
-    fontWeight: "bold",
   },
   totalRow: {
     flexDirection: "row",
-    alignItems: "center",
+    justifyContent: "space-between",
+    marginTop: 6,
   },
   totalAmount: {
-    fontSize: 14,
-    fontWeight: "bold",
-    color: "#333",
+    fontSize: 16,
+    fontWeight: "500",
+    color: "#6A5ACD",
   },
   innerAccordionRight: {
     flexDirection: "row",
     alignItems: "center",
   },
   itemCountBox: {
-    backgroundColor: "#6A5ACD",
-    borderRadius: 8,
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    marginRight: 8,
+    backgroundColor: "#0071e3",
+    padding: 6,
+    borderRadius: 12,
+    marginRight: 10,
   },
   itemCountText: {
-    fontSize: 12,
-    fontWeight: "bold",
+    width: 25,
+    textAlign: "center",
     color: "#fff",
+    fontWeight: "600",
   },
   innerAccordionContent: {
     paddingLeft: 16,
-    paddingVertical: 12,
-    backgroundColor: "#ffffff", 
-    borderRadius: 8,
-    marginTop: 6,
-    shadowColor: "#ddd", 
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    marginBottom: 8,
+  },
+  innerAccordionItemContainer: {
+    padding: 8,
   },
   innerAccordionItem: {
-    fontSize: 14,
+    fontSize: 16,
     color: "#555",
-    marginBottom: 8,
-    paddingVertical: 4,
-    backgroundColor: "#fff", 
-    borderRadius: 6,
-    paddingHorizontal: 10,
-    textAlign: "left",
+    marginVertical: 4,
   },
   bottomDividerContainer: {
     marginTop: 16,
+    alignItems: "center",
   },
   seeAllButton: {
-    marginTop: 10,
-    padding: 8,
-    alignItems: "center",
+    paddingVertical: 10,
+    backgroundColor: "#f4f4f4",
+    borderRadius: 12,
+    paddingHorizontal: 20,
   },
   seeAllText: {
     fontSize: 16,
-    color: "#333",  // Koyu gri renk
-    fontWeight: "bold",
+    fontWeight: "600",
+    color: "#333",
+  },
+  itemCard: {
+    backgroundColor: "#f4f4f4",
+    marginVertical: 8,
+    padding: 16,
+    borderRadius: 8,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  itemValue: {
+    fontSize: 20, // Boyutu büyüttüm
+    fontWeight: "700", // Kalınlık artırıldı
+    color: "#1E90FF", // Mavi renk
   },
 });
-
 
 export default TransactionAccordion;
