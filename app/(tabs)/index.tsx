@@ -8,175 +8,9 @@ import {
 } from "react-native";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { Card } from "react-native-paper"; // Paper Card bileşenini import ediyoruz.
-
-// Mock Data
-const mockData = [
-  {
-    id: 1,
-    date: "12 Jan 2025",
-    spendings: 100,
-    income: 10,
-    categoryName: "Commute",
-    categoryIcon: "commute",
-    transactions: [
-      { id: 1, name: "Uber", price: 80 },
-      { id: 2, name: "Metro", price: 10 },
-    ],
-  },
-  {
-    id: 2,
-    date: "15 Jan 2025",
-    spendings: 20,
-    income: 0,
-    categoryName: "Food And Drinks",
-    categoryIcon: "restaurant",
-    transactions: [
-      { id: 1, name: "Hamburger", price: 6 },
-      { id: 2, name: "Coffee", price: 4 },
-      { id: 3, name: "Beer", price: 10 },
-    ],
-  },
-];
-
-const TransactionAccordion = () => {
-  const [isTransactionOpen, setTransactionOpen] = useState(false);
-  const [openCards, setOpenCards] = useState<number[]>([]);
-
-  const toggleCardAccordion = (index: number) => {
-    if (openCards.includes(index)) {
-      setOpenCards(openCards.filter((i) => i !== index));
-    } else {
-      setOpenCards([...openCards, index]);
-    }
-  };
-
-  return (
-    <ScrollView style={styles.container}>
-      {/* Transaction Accordion */}
-      <TouchableOpacity
-        style={styles.accordionHeader}
-        onPress={() => setTransactionOpen(!isTransactionOpen)}
-      >
-        <Text style={styles.accordionTitle}>Transaction</Text>
-        <MaterialIcons
-          name={isTransactionOpen ? "keyboard-arrow-up" : "keyboard-arrow-down"}
-          size={24}
-          color="#666"
-        />
-      </TouchableOpacity>
-
-      {/* Cards inside Transaction Accordion */}
-      {isTransactionOpen && (
-        <View
-          style={[
-            styles.transactionContent,
-            { backgroundColor: "#f8f8f8", borderRadius: 12 },
-          ]}
-        >
-          {mockData.map((cardData, cardIndex) => (
-            <Card key={cardData.id} style={styles.card}>
-              {/* Paper Card bileşeni kullanılıyor */}
-              <Card.Content>
-                <View style={styles.cardHeader}>
-                  <Text style={styles.cardDate}>{cardData.date}</Text>
-                </View>
-                <View style={styles.cardRow}>
-                  <Text style={styles.cardLabel}>Spendings</Text>
-                  <Text style={styles.cardValueSpending}>
-                    -${cardData.spendings}
-                  </Text>
-                </View>
-                <View style={styles.cardRow}>
-                  <Text style={styles.cardLabel}>Income</Text>
-                  <Text style={styles.cardValueIncome}>
-                    +${cardData.income}
-                  </Text>
-                </View>
-                <View style={styles.divider} />
-
-                {/* Nested Accordion for Food and Drinks */}
-                <TouchableOpacity
-                  style={styles.innerAccordionHeader}
-                  onPress={() => toggleCardAccordion(cardData.id)}
-                >
-                  <View style={styles.innerAccordionLeft}>
-                    <MaterialIcons
-                      name={cardData.categoryIcon}
-                      size={20}
-                      color="#000000"
-                      style={styles.innerAccordionIcon}
-                    />
-                    <View>
-                      <Text style={styles.innerAccordionTitle}>
-                        {cardData.categoryName}
-                      </Text>
-                      <View style={styles.totalRow}>
-                        <Text style={styles.totalAmount}>
-                          $
-                          {cardData.transactions.reduce(
-                            (acc, item) => acc + item.price,
-                            0
-                          )}
-                        </Text>
-                      </View>
-                    </View>
-                  </View>
-                  <View style={styles.innerAccordionRight}>
-                    <View style={styles.itemCountBox}>
-                      <Text style={styles.itemCountText}>
-                        {cardData.transactions.length}
-                      </Text>
-                    </View>
-                    <MaterialIcons
-                      name={
-                        openCards.includes(cardData.id)
-                          ? "keyboard-arrow-up"
-                          : "keyboard-arrow-down"
-                      }
-                      size={24}
-                      color="#666"
-                    />
-                  </View>
-                </TouchableOpacity>
-
-                {openCards.includes(cardData.id) && (
-                  <View style={styles.innerAccordionContent}>
-                    {/* Nested Card under Food and Drinks */}
-                    <Card style={styles.subCard}>
-                      <Card.Content>
-                        {cardData.transactions.map((item) => (
-                          <View key={item.id} style={styles.cardItemContainer}>
-                            <Text style={styles.innerAccordionItem}>
-                              {item.name}: ${item.price}
-                            </Text>
-                          </View>
-                        ))}
-
-                        <Text style={styles.subCardTitle}>More Details</Text>
-                        <Text style={styles.subCardText}>
-                          This is a detailed description of the food items, such
-                          as ingredients, pricing, and other information.
-                        </Text>
-                      </Card.Content>
-                    </Card>
-                  </View>
-                )}
-              </Card.Content>
-            </Card>
-          ))}
-
-          {/* Divider and See All */}
-          <View style={styles.bottomDividerContainer}>
-            <View style={styles.divider} />
-            <TouchableOpacity style={styles.seeAllButton}>
-              <Text style={styles.seeAllText}>See All</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      )}
-    </ScrollView>
-  );
-};
+import CardObj from "./CardObj";
+import CardRowObj from "./CardRowObj";
+import CardComponent from "./CardComponent";
 
 const styles = StyleSheet.create({
   container: {
@@ -352,5 +186,186 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
 });
+
+// Mock Datas
+const mockDatas = [
+  {
+    id: 1,
+    date: "12 Jan 2025",
+    spendings: 100,
+    income: 10,
+    categoryName: "Commute",
+    categoryIcon: "commute",
+    transactions: [
+      { id: 1, name: "Uber", price: 80 },
+      { id: 2, name: "Metro", price: 10 },
+    ],
+  },
+  {
+    id: 2,
+    date: "15 Jan 2025",
+    spendings: 20,
+    income: 0,
+    categoryName: "Food And Drinks",
+    categoryIcon: "restaurant",
+    transactions: [
+      { id: 1, name: "Hamburger", price: 6 },
+      { id: 2, name: "Coffee", price: 4 },
+      { id: 3, name: "Beer", price: 10 },
+    ],
+  },
+];
+
+const CardDatas: CardObj[] = [];
+
+mockDatas.forEach((cData) => {
+  const CardRowDatas: CardRowObj[] = [];
+  CardRowDatas.push(
+    new CardRowObj(
+      1,
+      "Spendings",
+      "-$" + cData.spendings.toString(),
+      styles.cardLabel,
+      styles.cardValueSpending
+    )
+  );
+  CardRowDatas.push(
+    new CardRowObj(
+      2,
+      "Income",
+      "+$" + cData.income.toString(),
+      styles.cardLabel,
+      styles.cardValueIncome
+    )
+  );
+  CardDatas.push(new CardObj(cData.id, cData.date, CardRowDatas));
+});
+
+const TransactionAccordion = () => {
+  const [isTransactionOpen, setTransactionOpen] = useState(false);
+  const [openCards, setOpenCards] = useState<number[]>([]);
+
+  const toggleCardAccordion = (index: number) => {
+    if (openCards.includes(index)) {
+      setOpenCards(openCards.filter((i) => i !== index));
+    } else {
+      setOpenCards([...openCards, index]);
+    }
+  };
+
+  return (
+    <ScrollView style={styles.container}>
+      {/* Transaction Accordion */}
+      <TouchableOpacity
+        style={styles.accordionHeader}
+        onPress={() => setTransactionOpen(!isTransactionOpen)}
+      >
+        <Text style={styles.accordionTitle}>Transaction</Text>
+        <MaterialIcons
+          name={isTransactionOpen ? "keyboard-arrow-up" : "keyboard-arrow-down"}
+          size={24}
+          color="#666"
+        />
+      </TouchableOpacity>
+
+      {/* Cards inside Transaction Accordion */}
+      {isTransactionOpen && (
+        <View
+          style={[
+            styles.transactionContent,
+            { backgroundColor: "#f8f8f8", borderRadius: 12 },
+          ]}
+        >
+          {CardDatas.map((cardData, cardIndex) => {
+            const mockData = mockDatas.filter((x) => x.id == cardData.id)[0];
+
+            return (
+              <CardComponent cardData={cardData}>
+                <View style={styles.divider} />
+
+                {/* Nested Accordion for Food and Drinks */}
+
+                <TouchableOpacity
+                  style={styles.innerAccordionHeader}
+                  onPress={() => toggleCardAccordion(cardData.id)}
+                >
+                  <View style={styles.innerAccordionLeft}>
+                    <MaterialIcons
+                      name={mockData.categoryIcon}
+                      size={20}
+                      color="#000000"
+                      style={styles.innerAccordionIcon}
+                    />
+                    <View>
+                      <Text style={styles.innerAccordionTitle}>
+                        {mockData.categoryName}
+                      </Text>
+                      <View style={styles.totalRow}>
+                        <Text style={styles.totalAmount}>
+                          $
+                          {mockData.transactions.reduce(
+                            (acc, item) => acc + item.price,
+                            0
+                          )}
+                        </Text>
+                      </View>
+                    </View>
+                  </View>
+                  <View style={styles.innerAccordionRight}>
+                    <View style={styles.itemCountBox}>
+                      <Text style={styles.itemCountText}>
+                        {mockData.transactions.length}
+                      </Text>
+                    </View>
+                    <MaterialIcons
+                      name={
+                        openCards.includes(cardData.id)
+                          ? "keyboard-arrow-up"
+                          : "keyboard-arrow-down"
+                      }
+                      size={24}
+                      color="#666"
+                    />
+                  </View>
+                </TouchableOpacity>
+
+                {openCards.includes(cardData.id) && (
+                  <View style={styles.innerAccordionContent}>
+                    {/* Nested Card under Food and Drinks */}
+                    <Card style={styles.subCard}>
+                      <Card.Content>
+                        {mockData.transactions.map((item) => (
+                          <View key={item.id} style={styles.cardItemContainer}>
+                            <Text style={styles.innerAccordionItem}>
+                              {item.name}: ${item.price}
+                            </Text>
+                          </View>
+                        ))}
+
+                        <Text style={styles.subCardTitle}>More Details</Text>
+                        <Text style={styles.subCardText}>
+                          This is a detailed description of the food items, such
+                          as ingredients, pricing, and other information.
+                        </Text>
+                      </Card.Content>
+                    </Card>
+                  </View>
+                )}
+              </CardComponent>
+            );
+          })}
+
+          {/* Divider and See All */}
+          <View style={styles.bottomDividerContainer}>
+            <View style={styles.divider} />
+            <TouchableOpacity style={styles.seeAllButton}>
+              <Text style={styles.seeAllText}>See All</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      )}
+    </ScrollView>
+  );
+};
 
 export default TransactionAccordion;
